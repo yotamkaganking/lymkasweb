@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>משחק צבא</title>
+    <title>Army Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -26,24 +26,24 @@
     </style>
 </head>
 <body>
-    <h1>משחק צבא</h1>
-    <p>מטרת המשחק היא לבנות צבא חזק ולהילחם בצבא היריב.</p>
+    <h1>Army Game</h1>
+    <p>The goal of the game is to build a strong army and fight against the enemy army.</p>
     
-    <h2>מטבעות: <span id="coins">100</span></h2>
+    <h2>Coins: <span id="coins">100</span></h2>
     
-    <h2>החיילים שלך</h2>
-    <p>חיילים: <span id="soldiers">3</span></p>
-    <button onclick="buySoldier()">קנה חייל (2 מטבעות)</button>
+    <h2>Your Soldiers</h2>
+    <p>Soldiers: <span id="soldiers">3</span></p>
+    <button onclick="buySoldier()">Buy Soldier (2 coins)</button>
     
-    <h2>צבא יריב</h2>
-    <p>חיילים: <span id="enemySoldiers">90</span></p>
-    <button onclick="attack()">התקפה</button>
+    <h2>Enemy Army</h2>
+    <p>Soldiers: <span id="enemySoldiers">90</span></p>
+    <button onclick="attack()">Attack</button>
 
-    <h2>הערים</h2>
-    <p>מספר הערים: <span id="cityCount">0</span></p>
-    <button onclick="buildCity('tech')">בניית עיר הייטק (100 מטבעות)</button>
-    <button onclick="buildCity('resource')">בניית עיר משאבים (100 מטבעות)</button>
-    <button onclick="addPeopleToCity()">הוספת אנשים לערים</button>
+    <h2>Cities</h2>
+    <p>Number of cities: <span id="cityCount">0</span></p>
+    <button onclick="buildCity('tech')">Build Tech City (100 coins)</button>
+    <button onclick="buildCity('resource')">Build Resource City (100 coins)</button>
+    <button onclick="addPeopleToCity()">Add People to Cities</button>
 
     <script>
         let coins = 100;
@@ -64,7 +64,7 @@
                 soldiers++;
                 updateDisplay();
             } else {
-                alert("אין לך מספיק מטבעות.");
+                alert("You don't have enough coins.");
             }
         }
 
@@ -87,10 +87,10 @@
                     handleEnemyDeaths();
                     updateDisplay();
                 } else {
-                    alert("היריב אין לו חיילים להתקוף.");
+                    alert("The enemy has no soldiers to attack.");
                 }
             } else {
-                alert("אין לך חיילים להתקוף.");
+                alert("You don't have soldiers to attack.");
             }
         }
 
@@ -100,7 +100,7 @@
                 cities.push({ type: type, population: 10 });
                 updateDisplay();
             } else {
-                alert("אין לך מספיק מטבעות.");
+                alert("You don't have enough coins.");
             }
         }
 
@@ -111,18 +111,18 @@
                 }
                 updateDisplay();
             } else {
-                alert("אין לך ערים להוספת אנשים.");
+                alert("You don't have cities to add people to.");
             }
         }
 
         function handlePlayerDeaths() {
-            // כאן אנחנו פשוט מעדכנים את המסך ללא טיפול ספציפי
+            // Here we simply update the display without specific handling
             updateDisplay();
         }
 
         function handleEnemyDeaths() {
             if (enemySoldiers <= 0) {
-                alert("ניצחת! היריב נכנע!");
+                alert("You win! The enemy surrenders!");
                 location.reload();
             }
         }
