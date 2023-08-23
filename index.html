@@ -1,9 +1,81 @@
 <!DOCTYPE html>
-<html>
-    <head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>משחק צבא</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        h1, h2 {
+            color: #3498db;
+        }
+        p {
+            color: #333;
+        }
+        button {
+            padding: 5px 10px;
+            margin: 5px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>משחק צבא</h1>
+    <p>מטרת המשחק היא לבנות צבא חזק ולהילחם בצבא היריב.</p>
+    
+    <h2>מטבעות: <span id="coins">100</span></h2>
+    
+    <h2>החיילים שלך</h2>
+    <p>חיילים: <span id="soldiers">0</span></p>
+    <button onclick="buySoldier()">קנה חייל (10 מטבעות)</button>
+    
+    <h2>צבא יריב</h2>
+    <p>חיילים: <span id="enemySoldiers">10</span></p>
+    <button onclick="attack()">התקפה</button>
+    
+    <script>
+        let coins = 100;
+        let soldiers = 0;
+        let enemySoldiers = 10;
 
-    </head>
-    <body>
-        12345
-    </body>
+        function updateDisplay() {
+            document.getElementById("coins").textContent = coins;
+            document.getElementById("soldiers").textContent = soldiers;
+            document.getElementById("enemySoldiers").textContent = enemySoldiers;
+        }
+
+        function buySoldier() {
+            if (coins >= 10) {
+                coins -= 10;
+                soldiers++;
+                updateDisplay();
+            } else {
+                alert("אין לך מספיק מטבעות.");
+            }
+        }
+
+        function attack() {
+            if (soldiers > 0) {
+                if (enemySoldiers > 0) {
+                    enemySoldiers -= soldiers;
+                    if (enemySoldiers < 0) {
+                        enemySoldiers = 0;
+                    }
+                    coins += 5;
+                    updateDisplay();
+                } else {
+                    alert("היריב אין לו חיילים להתקוף.");
+                }
+            } else {
+                alert("אין לך חיילים להתקוף.");
+            }
+        }
+    </script>
+</body>
 </html>
