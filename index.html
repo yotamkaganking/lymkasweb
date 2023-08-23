@@ -32,8 +32,8 @@
     <h2>מטבעות: <span id="coins">100</span></h2>
     
     <h2>החיילים שלך</h2>
-    <p>חיילים: <span id="soldiers">0</span></p>
-    <button onclick="buySoldier()">קנה חייל (1 מטבעות)</button>
+    <p>חיילים: <span id="soldiers">3</span></p>
+    <button onclick="buySoldier()">קנה חייל (2 מטבעות)</button>
     
     <h2>צבא יריב</h2>
     <p>חיילים: <span id="enemySoldiers">90</span></p>
@@ -109,9 +109,11 @@
         function updateEconomy() {
             for (let city of cities) {
                 if (city.type === "tech") {
+                    enemySoldiers = enemySoldiers + 1
                     coins += city.population / 10;
                 } else if (city.type === "resource") {
                     coins += city.population / 20;
+                    enemySoldiers = enemySoldiers + 1
                 }
             }
             updateDisplay();
