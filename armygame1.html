@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>משחק צבא</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        h1, h2 {
+            color: #3498db;
+        }
+        p {
+            color: #333;
+        }
+        button {
+            padding: 5px 10px;
+            margin: 5px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>משחק צבא</h1>
+    <p>מטרת המשחק היא לבנות צבא חזק ולהילחם בצבא היריב.</p>
+    
+    <h2>מטבעות: <span id="coins">100</span></h2>
+    
+    <h2>החיילים שלך</h2>
+    <p>חיילים: <span id="soldiers">3</span></p>
+    <button onclick="buySoldier()">קנה חייל (2 מטבעות)</button>
+    
+    <h2>צבא יריב</h2>
+    <p>חיילים: <span id="enemySoldiers">90</span></p>
+    <button onclick="attack()">התקפה</button>
+
+    <h2>הערים</h2>
+    <p>מספר הערים: <span id="cityCount">0</span></p>
+    <button onclick="buildCity('tech')">בניית עיר הייטק (100 מטבעות)</button>
+    <button onclick="buildCity('resource')">בניית עיר משאבים (100 מטבעות)</button>
+    <button onclick="addPeopleToCity()">הוספת אנשים לערים</button>
+
+    <script>
+        let coins = 100;
+        let soldiers = 3;
+        let enemySoldiers = 90;
+        let cities = [];
+
+        function updateDisplay() {
+            document.getElementById("coins").textContent = coins;
+            document.getElementById("soldiers").textContent = soldiers;
+            document.getElementById("enemySoldiers").textContent = enemySoldiers;
+            document.getElementById("cityCount").textContent = cities.length;
+        }
+
+        function buySoldier() {
+            if (coins >= 1) {
+                coins -= 1;
+                soldiers++;
+                updateDisplay();
+            } else {
+                alert("אין לך מספיק מטבעות.");
+            }
+        }
+
+        function attack() {
+            if (soldiers > 0) {
+                if (enemySoldiers > 0) {
+                    enemySoldiers -= soldiers;
+                    if (enemySoldiers < 0) {
+                        enemySoldiers = 0;
+                    }
+
+                    let playerDeaths = Math.floor(Math.random() * soldiers) + 1;
+                    soldiers -= playerDeaths;
+                    if (soldiers < 0) {
+                        soldiers = 0;
+                    }
+
+                    coins += 5;
+                    handlePlayerDeaths();
+                    handleEnemyDeaths();
+                    updateDisplay();
+                } else {
+                    alert("היריב אין לו חיילים להתקוף.");
+                }
+            } else {
+                alert("אין לך חיילים להתקוף.");
+            }
+        }
+
+        function buildCity(type) {
+            if (coins >= 100) {
+                coins -= 100;
+                cities.push({ type: type, population: 10 });
+                updateDisplay();
+            } else {
+                alert("אין לך מספיק מטבעות.");
+            }
+        }
+
+        function addPeopleToCity() {
+            if (cities.length > 0) {
+                for (let city of cities) {
+                    city.population += 5;
+                }
+                updateDisplay();
+            } else {
+                alert("אין לך ערים להוספת אנשים.");
+            }
+        }
+
+        function handlePlayerDeaths() {
+            // כאן אנחנו פשוט מעדכנים את המסך ללא טיפול ספציפי
+            updateDisplay();
+        }
+
+        function handleEnemyDeaths() {
+            if (enemySoldiers <= 0) {
+                alert("ניצחת! היריב נכנע!");
+                location.reload();
+            }
+        }
+
+        function updateEconomy() {
+            for (let city of cities) {
+                if (city.type === "tech") {
+                    enemySoldiers = enemySoldiers + 0.1;
+                    coins += city.population / 10;
+                } else if (city.type === "resource") {
+                    coins += city.population / 20;
+                    enemySoldiers = enemySoldiers + 0.1;
+                }
+            }
+            handlePlayerDeaths();
+            handleEnemyDeaths();
+            updateDisplay();
+        }
+
+        function init() {
+            setInterval(updateEconomy, 1000);
+            enemySoldiers = enemySoldiers + 1;
+            updateDisplay();
+        }
+
+        init();
+    </script>
+</body>
+</html>
