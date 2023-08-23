@@ -76,7 +76,8 @@
                         enemySoldiers = 0;
                     }
 
-                    soldiers -= Math.floor(Math.random() * enemySoldiers) + 1;
+                    let playerDeaths = Math.floor(Math.random() * soldiers) + 1;
+                    soldiers -= playerDeaths;
                     if (soldiers < 0) {
                         soldiers = 0;
                     }
