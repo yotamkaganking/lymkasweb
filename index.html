@@ -109,18 +109,18 @@
         function updateEconomy() {
             for (let city of cities) {
                 if (city.type === "tech") {
-                    enemySoldiers = enemySoldiers + 1
+                    enemySoldiers = enemySoldiers + 0.1
                     coins += city.population / 10;
                 } else if (city.type === "resource") {
                     coins += city.population / 20;
-                    enemySoldiers = enemySoldiers + 1
+                    enemySoldiers = enemySoldiers + 0.1
                 }
             }
             updateDisplay();
         }
 
         function init() {
-            setInterval(updateEconomy, 100); // עדכון הכנסות כל 10 שניות
+            setInterval(updateEconomy, 1000); // עדכון הכנסות כל 10 שניות
             enemySoldiers = enemySoldiers + 1
             updateDisplay();
         }
