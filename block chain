@@ -1,1 +1,130 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block Chain Text Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .blockchain {
+            border: 1px solid #333;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+
+        .block {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .block-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .block-content {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        .block-buttons {
+            display: flex;
+            align-items: center;
+        }
+
+        button {
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" id="username" placeholder="Username">
+    <textarea id="userInput" rows="4" cols="50" placeholder="Type here..."></textarea>
+    <button onclick="addToBlock()">Add to Block</button>
+    <button onclick="clearBlocks()">Clear All Blocks</button>
+    <div class="blockchain" id="blockchain"></div>
+
+    <script>
+        const savedBlocks = JSON.parse(localStorage.getItem("blocks")) || [];
+
+        function addToBlock() {
+            const username = document.getElementById("username").value;
+            const userInput = document.getElementById("userInput").value;
+
+            if (username.trim() !== "" && userInput.trim() !== "") {
+                const block = {
+                    blockNumber: savedBlocks.length + 1,
+                    username: username,
+                    text: userInput.trim(),
+                };
+
+                savedBlocks.push(block);
+                localStorage.setItem("blocks", JSON.stringify(savedBlocks));
+                updateBlocksDisplay();
+            }
+        }
+
+        function clearBlocks() {
+            localStorage.removeItem("blocks");
+            savedBlocks.length = 0;
+            updateBlocksDisplay();
+        }
+
+        function updateBlocksDisplay() {
+            const blockchainDiv = document.getElementById("blockchain");
+            blockchainDiv.innerHTML = "";
+
+            savedBlocks.forEach(block => {
+                const blockDiv = document.createElement("div");
+                blockDiv.classList.add("block");
+                const blockContentDiv = document.createElement("div");
+                blockContentDiv.classList.add("block-content");
+                blockContentDiv.textContent = block.text;
+                blockDiv.appendChild(blockContentDiv);
+                const blockHeader = document.createElement("div");
+                blockHeader.classList.add("block-header");
+                blockHeader.textContent = `Block Number: ${block.blockNumber} (Created by: ${block.username})`;
+                blockDiv.appendChild(blockHeader);
+                const blockButtonsDiv = document.createElement("div");
+                blockButtonsDiv.classList.add("block-buttons");
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "Delete Block";
+                deleteButton.addEventListener("click", () => deleteBlock(block.blockNumber));
+                blockButtonsDiv.appendChild(deleteButton);
+                blockDiv.appendChild(blockButtonsDiv);
+
+                blockchainDiv.appendChild(blockDiv);
+            });
+        }
+
+        function deleteBlock(blockNumber) {
+            const index = savedBlocks.findIndex(block => block.blockNumber === blockNumber);
+            if (index !== -1) {
+                savedBlocks.splice(index, 1);
+                localStorage.setItem("blocks", JSON.stringify(savedBlocks));
+                updateBlocksDisplay();
+            }
+        }
+
+        updateBlocksDisplay();
+    </script>
+</body>
+</html>
