@@ -106,22 +106,30 @@
             }
         }
 
+        function handlePlayerDeaths() {
+            if (soldiers <= 0) {
+                alert("כל החיילים שלך נפלו. המשחק נגמר!");
+                location.reload();
+            }
+        }
+
         function updateEconomy() {
             for (let city of cities) {
                 if (city.type === "tech") {
-                    enemySoldiers = enemySoldiers + 0.5
+                    enemySoldiers = enemySoldiers + 0.1;
                     coins += city.population / 10;
                 } else if (city.type === "resource") {
                     coins += city.population / 20;
-                    enemySoldiers = enemySoldiers + 0.5
+                    enemySoldiers = enemySoldiers + 0.1;
                 }
             }
+            handlePlayerDeaths();
             updateDisplay();
         }
 
         function init() {
-            setInterval(updateEconomy, 1000); // עדכון הכנסות כל 10 שניות
-            enemySoldiers = enemySoldiers + 1
+            setInterval(updateEconomy, 1000);
+            enemySoldiers = enemySoldiers + 1;
             updateDisplay();
         }
 
