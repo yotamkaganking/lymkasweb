@@ -38,16 +38,24 @@
     <h2>צבא יריב</h2>
     <p>חיילים: <span id="enemySoldiers">10</span></p>
     <button onclick="attack()">התקפה</button>
-    
+
+    <h2>הערים</h2>
+    <p>מספר הערים: <span id="cityCount">0</span></p>
+    <button onclick="buildCity('tech')">בניית עיר הייטק (100 מטבעות)</button>
+    <button onclick="buildCity('resource')">בניית עיר משאבים (100 מטבעות)</button>
+    <button onclick="addPeopleToCity()">הוספת אנשים לערים</button>
+
     <script>
         let coins = 100;
         let soldiers = 0;
         let enemySoldiers = 10;
+        let cities = [];
 
         function updateDisplay() {
             document.getElementById("coins").textContent = coins;
             document.getElementById("soldiers").textContent = soldiers;
             document.getElementById("enemySoldiers").textContent = enemySoldiers;
+            document.getElementById("cityCount").textContent = cities.length;
         }
 
         function buySoldier() {
@@ -76,6 +84,45 @@
                 alert("אין לך חיילים להתקוף.");
             }
         }
+
+        function buildCity(type) {
+            if (coins >= 100) {
+                coins -= 100;
+                cities.push({ type: type, population: 10 });
+                updateDisplay();
+            } else {
+                alert("אין לך מספיק מטבעות.");
+            }
+        }
+
+        function addPeopleToCity() {
+            if (cities.length > 0) {
+                for (let city of cities) {
+                    city.population += 5;
+                }
+                updateDisplay();
+            } else {
+                alert("אין לך ערים להוספת אנשים.");
+            }
+        }
+
+        function updateEconomy() {
+            for (let city of cities) {
+                if (city.type === "tech") {
+                    coins += city.population / 10;
+                } else if (city.type === "resource") {
+                    coins += city.population / 20;
+                }
+            }
+            updateDisplay();
+        }
+
+        function init() {
+            setInterval(updateEconomy, 10000); // עדכון הכנסות כל 10 שניות
+            updateDisplay();
+        }
+
+        init();
     </script>
 </body>
 </html>
