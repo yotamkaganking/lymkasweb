@@ -76,6 +76,8 @@
                         enemySoldiers = 0;
                     }
                     coins += 5;
+                    handlePlayerDeaths();
+                    handleEnemyDeaths();
                     updateDisplay();
                 } else {
                     alert("היריב אין לו חיילים להתקוף.");
@@ -113,6 +115,13 @@
             }
         }
 
+        function handleEnemyDeaths() {
+            if (enemySoldiers <= 0) {
+                alert("ניצחת! היריב נכנע!");
+                location.reload();
+            }
+        }
+
         function updateEconomy() {
             for (let city of cities) {
                 if (city.type === "tech") {
@@ -124,6 +133,7 @@
                 }
             }
             handlePlayerDeaths();
+            handleEnemyDeaths();
             updateDisplay();
         }
 
