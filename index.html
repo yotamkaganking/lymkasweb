@@ -33,10 +33,10 @@
     
     <h2>החיילים שלך</h2>
     <p>חיילים: <span id="soldiers">0</span></p>
-    <button onclick="buySoldier()">קנה חייל (10 מטבעות)</button>
+    <button onclick="buySoldier()">קנה חייל (1 מטבעות)</button>
     
     <h2>צבא יריב</h2>
-    <p>חיילים: <span id="enemySoldiers">10</span></p>
+    <p>חיילים: <span id="enemySoldiers">90</span></p>
     <button onclick="attack()">התקפה</button>
 
     <h2>הערים</h2>
@@ -47,8 +47,8 @@
 
     <script>
         let coins = 100;
-        let soldiers = 0;
-        let enemySoldiers = 10;
+        let soldiers = 3;
+        let enemySoldiers = 90;
         let cities = [];
 
         function updateDisplay() {
