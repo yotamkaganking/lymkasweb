@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Animals Battle</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      margin: 0;
+    }
+    .game-container {
+      display: flex;
+      justify-content: space-between;
+      width: 80%;
+      margin: 20px auto;
+    }
+    .player,
+    .opponent {
+      background-color: white;
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .pets {
+      font-size: 24px;
+    }
+    /* סגנונות נוספים כאן */
+  </style>
+</head>
+<body>
+  <h1>Animals Battle</h1>
+  <div class="game-container">
+    <div class="player">
+      <h2>Player</h2>
+      <div class="pets" id="player-pets"></div>
+    </div>
+    <div class="opponent">
+      <h2>Opponent</h2>
+      <div class="pets" id="opponent-pets"></div>
+    </div>
+  </div>
+  <button id="draw-btn">Draw Pets</button>
+  <button id="battle-btn">Battle</button>
+  <button id="level-up-btn" disabled>Level Up</button>
+  <button id="select-pet-btn" disabled>Select Pet</button>
+  <button id="use-pet-btn" disabled>Use Pet</button>
+  <button id="store-btn">Store</button>
+  <p>Wins: <span id="wins">0</span></p>
+  <p>Losses: <span id="losses">0</span></p>
+  <p>Level: <span id="level">1</span></p>
+  <p>Coins: <span id="coins">0</span></p>
+  <p id="battle-result"></p>
+  <div id="store-container">
+    <h3>Store</h3>
+    <button id="buy-pet-btn">Buy Pet (Cost: 10 coins)</button>
+    <div id="available-pets"></div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const playerPets = document.getElementById("player-pets");
+      const opponentPets = document.getElementById("opponent-pets");
+      const drawButton = document.getElementById("draw-btn");
+      const battleButton = document.getElementById("battle-btn");
+      const levelUpButton = document.getElementById("level-up-btn");
+      const selectPetButton = document.getElementById("select-pet-btn");
+      const usePetButton = document.getElementById("use-pet-btn");
+      const storeButton = document.getElementById("store-btn");
+      const buyPetButton = document.getElementById("buy-pet-btn");
+      const winsDisplay = document.getElementById("wins");
+      const lossesDisplay = document.getElementById("losses");
+      const levelDisplay = document.getElementById("level");
+      const coinsDisplay = document.getElementById("coins");
+      const battleResult = document.getElementById("battle-result");
+      const storedPetsContainer = document.getElementById("stored-pets");
+      const storeContainer = document.getElementById("store-container");
+      const availablePetsContainer = document.getElementById("available-pets");
+      
+      let wins = 0;
+      let losses = 0;
+      let playerLevel = 1;
+      let coins = 0;
+      const levelUpThreshold = 3;
+      const petStore = [];
+      const rarePet = { emoji: "💎🐕", health: 4, attack: 6, rare: true };
+const petsByLevel = {
+  1: [
+    { emoji: "🐛", health: 2, attack: 1, rare: false }, // Insect
+    { emoji: "🐖", health: 4, attack: 2, rare: false }, // Pig
+    { emoji: "🐟", health: 3, attack: 3, rare: false }, // Fish
+    { emoji: "🐬", health: 4, attack: 4, rare: false }, // Dolphin
+    { emoji: "🏰💎", health: 5, attack: 3, rare: true }, // Castle
+    { emoji: "🦄💎", health: 4, attack: 4, rare: true }, // Unicorn
+    { emoji: "🐴", health: 5, attack: 5, rare: false }, // Horse
+       { emoji: "🚌💎", health: 30, attack: 5, rare: true }, // Bus
+  ],
+  2: [
+    { emoji: "🦩", health: 3, attack: 4, rare: false }, // Flamingo
+    { emoji: "🐘💎", health: 6, attack: 5, rare: true }, // Elephant
+    { emoji: "🦏", health: 5, attack: 6, rare: false }, // Rhinoceros
+    { emoji: "🐫", health: 7, attack: 3, rare: false }, // Camel
+    { emoji: "🦒💎", health: 5, attack: 7, rare: true }, // Giraffe
+    { emoji: "🦍", health: 6, attack: 6, rare: false }, // Gorilla
+    { emoji: "🐖", health: 4, attack: 4, rare: false }, // Pig
+    { emoji: "🦜💎", health: 3, attack: 5, rare: true }, // Parrot
+    { emoji: "🦢", health: 2, attack: 1, rare: false }, // Swan
+    { emoji: "🚌💎", health: 30, attack: 5, rare: true }, // Bus
+  ],
+  3: [
+    { emoji: "🐛", health: 2, attack: 1, rare: false }, // Insect
+    { emoji: "🐖", health: 4, attack: 2, rare: false }, // Pig
+    { emoji: "🐟", health: 3, attack: 3, rare: false }, // Fish
+    { emoji: "🐬", health: 4, attack: 4, rare: false }, // Dolphin
+    { emoji: "🦞", health: 5, attack: 3, rare: false }, // Lobster
+    { emoji: "🦑💎", health: 6, attack: 4, rare: true }, // Squid
+    { emoji: "🐔", health: 2, attack: 1, rare: false }, // Chicken
+       { emoji: "🚌💎", health: 30, attack: 5, rare: true }, // Bus
+  ],
+  4: [
+    { emoji: "🦘", health: 6, attack: 5, rare: false }, // Kangaroo
+    { emoji: "🐊", health: 7, attack: 4, rare: false }, // Crocodile
+    { emoji: "🦁", health: 5, attack: 6, rare: false }, // Lion
+    { emoji: "🐫", health: 6, attack: 5, rare: false }, // Camel
+    { emoji: "🦜💎", health: 3, attack: 7, rare: true }, // Parrot
+    { emoji: "🐘💎", health: 6, attack: 5, rare: false }, // Elephant
+    { emoji: "🦢", health: 2, attack: 4, rare: false }, // Swan
+    { emoji: "🦆", health: 1, attack: 3, rare: false }, // Duck
+    { emoji: "🦢", health: 2, attack: 2, rare: false }, // Swan
+    { emoji: "🚌💎", health: 30, attack: 5, rare: true }, // Bus
+  ],
+  5: [
+    { emoji: "🐉💎", health: 20, attack: 15, rare: true }, // Dragon
+    { emoji: "🦕💎", health: 18, attack: 12, rare: true }, // Dinosaur
+       { emoji: "🚌💎", health: 30, attack: 5, rare: true }, // Bus
+  ],
+  6: [
+    { emoji: "🦛", health: 12, attack: 8, rare: true }, // Hippo
+    { emoji: "🦆", health: 7, attack: 10, rare: true }, // Duck 
+       { emoji: "🚌💎", health: 30, attack: 5, rare: true }, // Bus
+  ],
+  7: [
+    { emoji: "🦖💎", health: 15, attack: 10, rare: true }, // Dinosaur
+    { emoji: "🐆", health: 10, attack: 12, rare: true }, // Leopard
+    { emoji: "🌊💎", health: 25, attack: 20, rare: true }, // Sea Monster
+    { emoji: "👿💎", health: 20, attack: 25, rare: true }, // Devil
+    { emoji: "🐉💎", health: 20, attack: 20, rare: true }, // Dragon
+      { emoji: "🚌💎", health: 30, attack: 5, rare: true }, // Bus
+  ],
+  8: [
+    { emoji: "👾💎", health: 30, attack: 30, rare: true }, // Alien
+    { emoji: "🌋💎", health: 25, attack: 35, rare: true }, // Volcano
+    { emoji: "🐅💎", health: 22, attack: 19, rare: false }, // Tiger
+    { emoji: "🐘💎", health: 23, attack: 17, rare: false }, // Elephant
+    { emoji: "🐍", health: 20, attack: 22, rare: false }, // Snake
+    { emoji: "🦁", health: 24, attack: 18, rare: false }, // Lion
+    { emoji: "🦄💎", health: 25, attack: 25, rare: true }, // Unicorn
+    { emoji: "🦉", health: 23, attack: 24, rare: false }, // Owl
+    { emoji: "🚌💎", health: 30, attack: 5, rare: true }, // Bus
+  ],
+};
+
+      
+      for (const level in petsByLevel) {
+        petsByLevel[level].push(rarePet);
+      }
+
+      let playerPet = null;
+      let opponentPet = null;
+      let selectedPet = null;
+      let levelUpCounter = 0;
+      
+      // פונקציה להצגת חיות זמניות בחנות
+      function displayAvailablePets() {
+        availablePetsContainer.innerHTML = "";
+        for (const pet of petStore) {
+          const petButton = document.createElement("button");
+          petButton.textContent = `${pet.emoji} (Cost: ${pet.cost} coins)`;
+          petButton.addEventListener("click", () => {
+            selectedPet = pet;
+            usePetButton.disabled = false;
+          });
+          availablePetsContainer.appendChild(petButton);
+        }
+      }
+
+      drawButton.addEventListener("click", () => {
+        // קוד הוספת חיות לשחקן וליריב
+        const playerRandomPet = getRandomPet(playerLevel);
+        const opponentRandomPet = getRandomPet(playerLevel);
+        playerPet = playerRandomPet;
+        opponentPet = opponentRandomPet;
+        playerPets.textContent = playerPet.emoji;
+        opponentPets.textContent = opponentPet.emoji;
+        battleButton.disabled = false;
+      });
+
+      battleButton.addEventListener("click", () => {
+        // קוד הקרב
+        const playerDamage = calculateDamage(playerPet.attack);
+        const opponentDamage = calculateDamage(opponentPet.attack);
+        playerPet.health -= opponentDamage;
+        opponentPet.health -= playerDamage;
+        if (playerPet.health <= 0 && opponentPet.health <= 0) {
+          battleResult.textContent = "It's a tie!";
+        } else if (playerPet.health <= 0) {
+          losses++;
+          lossesDisplay.textContent = losses;
+          battleResult.textContent = "You lose!";
+        } else if (opponentPet.health <= 0) {
+          wins++;
+          winsDisplay.textContent = wins;
+          battleResult.textContent = "You win!";
+        } else {
+          battleResult.textContent = "It's a battle!";
+        }
+        battleButton.disabled = true;
+        drawButton.disabled = false;
+      });
+
+      levelUpButton.addEventListener("click", () => {
+        // קוד עליה ברמה
+        playerLevel++;
+        levelDisplay.textContent = playerLevel;
+        levelUpButton.disabled = true;
+        levelUpCounter = 0;
+      });
+
+      selectPetButton.addEventListener("click", () => {
+        // בחירת חיה
+        selectedPet = playerPet;
+        usePetButton.disabled = false;
+      });
+
+      usePetButton.addEventListener("click", () => {
+        // שימוש בחיה בקרב
+        playerPet = selectedPet;
+        playerPets.textContent = playerPet.emoji;
+        selectPetButton.disabled = true;
+        usePetButton.disabled = true;
+        levelUpCounter++;
+        if (levelUpCounter >= levelUpThreshold) {
+          levelUpButton.disabled = false;
+        }
+      });
+
+      storeButton.addEventListener("click", () => {
+        // קוד הצגת החנות
+        displayAvailablePets();
+        storeContainer.style.display = "block";
+      });
+
+      buyPetButton.addEventListener("click", () => {
+        // קניית חיה מהחנות
+        if (coins >= 10) {
+          coins -= 10;
+          coinsDisplay.textContent = coins;
+          petStore.push(selectedPet);
+          displayAvailablePets();
+          usePetButton.disabled = false;
+          storeContainer.style.display = "none";
+        }
+      });
+
+      function getRandomPet(level) {
+        const availablePets = petsByLevel[level];
+        const randomIndex = Math.floor(Math.random() * availablePets.length);
+        return { ...availablePets[randomIndex] };
+      }
+
+      function calculateDamage(attack) {
+        const randomFactor = Math.random() * 0.5 + 0.75;
+        return Math.round(attack * randomFactor);
+      }
+    });
+  </script>
+</body>
+</html>
