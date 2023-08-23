@@ -75,6 +75,12 @@
                     if (enemySoldiers < 0) {
                         enemySoldiers = 0;
                     }
+
+                    soldiers -= Math.floor(Math.random() * enemySoldiers) + 1;
+                    if (soldiers < 0) {
+                        soldiers = 0;
+                    }
+
                     coins += 5;
                     handlePlayerDeaths();
                     handleEnemyDeaths();
