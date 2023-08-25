@@ -4,6 +4,26 @@
 
     </head>
     <body>
+            <script>
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            // כאן יש להתחבר לחוזה חכם ולקבל מידע ממנו
+            const web3 = new Web3("your_web3_provider"); // ייתכן שתצטרך להגדיר ספק Web3 תואם
+            const contractAddress = "your_contract_address";
+            const contractABI = your_contract_abi; // יש להגדיר את ABI של החוזה
+
+            const contractInstance = new web3.eth.Contract(contractABI, contractAddress);
+
+            // לדוגמה: לקבל את מספר הבלוק מהחוזה
+            const blockNumber = await contractInstance.methods.getBlockNumber().call();
+
+            // להציג את התוצאה ב-HTML
+            const blockNumberElement = document.querySelector('block-number');
+            blockNumberElement.textContent = `Block Number: ${blockNumber}`;
+        });
+
+
+    </script>
         <a href="armygame1.html">to army game</a>
         <br>
         <a href="animalbattel1.html">to animal battel</a>
